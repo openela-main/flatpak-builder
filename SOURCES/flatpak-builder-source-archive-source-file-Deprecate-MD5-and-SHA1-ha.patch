@@ -1,0 +1,77 @@
+From dfcc0717abaf30d1c0ac76becbe7e334b6a31a3e Mon Sep 17 00:00:00 2001
+From: Debarshi Ray <debarshir@gnome.org>
+Date: Mon, 31 Jan 2022 15:16:12 +0100
+Subject: [PATCH] source-archive, source-file: Deprecate MD5 and SHA1 hashes
+
+... because of their weaknesses, and show a warning suggesting SHA256
+instead.
+
+The new test cases were removed from this commit to simplify the
+downstream build.
+
+https://github.com/flatpak/flatpak-builder/pull/459
+https://bugzilla.redhat.com/show_bug.cgi?id=1935509
+---
+ src/builder-source-archive.c | 12 ++++++++++++
+ src/builder-source-file.c    | 12 ++++++++++++
+ 2 files changed, 24 insertions(+)
+
+diff --git a/src/builder-source-archive.c b/src/builder-source-archive.c
+index c93f84efc84c..04eafe44cd01 100644
+--- a/src/builder-source-archive.c
++++ b/src/builder-source-archive.c
+@@ -230,11 +230,23 @@ builder_source_archive_set_property (GObject      *object,
+     case PROP_MD5:
+       g_free (self->md5);
+       self->md5 = g_value_dup_string (value);
++      if (self->md5 != NULL && self->md5[0] != '\0')
++        {
++          g_printerr ("The \"md5\" source property is deprecated due to the weakness of MD5 hashes.\n");
++          g_printerr ("Use the \"sha256\" property for the more secure SHA256 hash.\n");
++        }
++
+       break;
+ 
+     case PROP_SHA1:
+       g_free (self->sha1);
+       self->sha1 = g_value_dup_string (value);
++      if (self->sha1 != NULL && self->sha1[0] != '\0')
++        {
++          g_printerr ("The \"sha1\" source property is deprecated due to the weakness of SHA1 hashes.\n");
++          g_printerr ("Use the \"sha256\" property for the more secure SHA256 hash.\n");
++        }
++
+       break;
+ 
+     case PROP_SHA256:
+diff --git a/src/builder-source-file.c b/src/builder-source-file.c
+index 715803d510bb..8a4077246cda 100644
+--- a/src/builder-source-file.c
++++ b/src/builder-source-file.c
+@@ -154,11 +154,23 @@ builder_source_file_set_property (GObject      *object,
+     case PROP_MD5:
+       g_free (self->md5);
+       self->md5 = g_value_dup_string (value);
++      if (self->md5 != NULL && self->md5[0] != '\0')
++        {
++          g_printerr ("The \"md5\" source property is deprecated due to the weakness of MD5 hashes.\n");
++          g_printerr ("Use the \"sha256\" property for the more secure SHA256 hash.\n");
++        }
++
+       break;
+ 
+     case PROP_SHA1:
+       g_free (self->sha1);
+       self->sha1 = g_value_dup_string (value);
++      if (self->sha1 != NULL && self->sha1[0] != '\0')
++        {
++          g_printerr ("The \"sha1\" source property is deprecated due to the weakness of SHA1 hashes.\n");
++          g_printerr ("Use the \"sha256\" property for the more secure SHA256 hash.\n");
++        }
++
+       break;
+ 
+     case PROP_SHA256:
+-- 
+2.34.1
+
