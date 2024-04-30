@@ -1,10 +1,11 @@
 %global debugedit_version 5.0
+%global elf_version 0.8.12
 %global glib2_version 2.44
 %global ostree_version 2017.14
 %global flatpak_version 0.99.1
 
 Name:           flatpak-builder
-Version:        1.2.2
+Version:        1.2.3
 Release:        1%{?dist}
 Summary:        Tool to build flatpaks from source
 
@@ -28,7 +29,7 @@ BuildRequires:  pkgconfig(glib-2.0) >= %{glib2_version}
 BuildRequires:  pkgconfig(gobject-introspection-1.0)
 BuildRequires:  pkgconfig(json-glib-1.0)
 BuildRequires:  pkgconfig(libcurl)
-BuildRequires:  pkgconfig(libelf)
+BuildRequires:  pkgconfig(libelf) >= %{elf_version}
 BuildRequires:  pkgconfig(libsoup-2.4)
 BuildRequires:  pkgconfig(ostree-1) >= %{ostree_version}
 BuildRequires:  pkgconfig(yaml-0.1)
@@ -36,6 +37,7 @@ BuildRequires:  /usr/bin/xmlto
 BuildRequires:  /usr/bin/xsltproc
 
 Requires:       debugedit >= %{debugedit_version}
+Requires:       elfutils-libelf%{?_isa} >= %{elf_version}
 Requires:       flatpak%{?_isa} >= %{flatpak_version}
 Requires:       glib2%{?_isa} >= %{glib2_version}
 Requires:       ostree-libs%{?_isa} >= %{ostree_version}
@@ -89,6 +91,10 @@ See http://flatpak.org/ for more information.
 
 
 %changelog
+* Wed Nov 08 2023 Debarshi Ray <rishi@fedoraproject.org> - 1.2.3-1
+- Update to 1.2.3
+Resolves: RHEL-16036
+
 * Mon Feb 07 2022 Debarshi Ray <rishi@fedoraproject.org> - 1.2.2-1
 - Rebase to 1.2.2
 Resolves: #1999742
