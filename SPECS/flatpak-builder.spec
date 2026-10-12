@@ -6,7 +6,7 @@
 
 Name:           flatpak-builder
 Version:        1.2.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Tool to build flatpaks from source
 
 # src/builder-utils.c has portions derived from GPLv2+ code,
@@ -14,6 +14,10 @@ Summary:        Tool to build flatpaks from source
 License:        LGPLv2+ and GPLv2+
 URL:            http://flatpak.org/
 Source0:        https://github.com/flatpak/flatpak-builder/releases/download/%{version}/%{name}-%{version}.tar.xz
+
+# CVE-2026-86320
+# https://github.com/flatpak/flatpak-builder/commit/6a01485332969e8d46f100ec1f8d6ea458cfd468
+Patch0:         builder-source-patch-disable-git-hooks-completely-when-applying-patches.patch
 
 BuildRequires:  gettext
 BuildRequires:  docbook-dtds
@@ -84,6 +88,10 @@ See http://flatpak.org/ for more information.
 
 
 %changelog
+* Fri Oct 02 2026 Luigi Pavan <lpavan@redhat.com> - 1.2.3-2
+- Disable git hooks when applying patches (CVE-2026-86320)
+  Resolves: RHEL-262183
+
 * Wed Nov 08 2023 Debarshi Ray <rishi@fedoraproject.org> - 1.2.3-1
 - Rebase to 1.2.3 (RHEL-16011)
 
