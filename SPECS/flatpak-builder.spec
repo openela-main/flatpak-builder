@@ -8,7 +8,7 @@
 
 Name:           flatpak-builder
 Version:        1.4.4
-Release:        1%{?dist}
+Release:        1%{?dist}.1
 Summary:        Tool to build flatpaks from source
 
 # src/builder-utils.c has portions derived from GPLv2+ code,
@@ -16,6 +16,10 @@ Summary:        Tool to build flatpaks from source
 License:        LGPL-2.1-or-later AND GPL-2.0-or-later
 URL:            https://flatpak.org/
 Source0:        https://github.com/flatpak/flatpak-builder/releases/download/%{version}/%{name}-%{version}.tar.xz
+
+# CVE-2026-86320
+# https://github.com/flatpak/flatpak-builder/commit/6a01485332969e8d46f100ec1f8d6ea458cfd468
+Patch:          builder-source-patch-disable-git-hooks-completely-when-applying-patches.patch
 
 # ostree not on i686 for RHEL 10
 # https://github.com/containers/composefs/pull/229#issuecomment-1838735764
@@ -109,6 +113,10 @@ install -pm 644 NEWS README.md %{buildroot}/%{_pkgdocdir}
 
 
 %changelog
+* Fri Oct 02 2026 Luigi Pavan <lpavan@redhat.com> - 1.4.4-1.1
+- Disable git hooks when applying patches (CVE-2026-86320)
+  Resolves: RHEL-262185
+
 * Thu Jan 09 2025 Jan Grulich <jgrulich@redhat.com> - 1.4.4-1
 - Update to 1.4.4
   Resolves: RHEL-47749

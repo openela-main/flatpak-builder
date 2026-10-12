@@ -1,0 +1,39 @@
+From 6a01485332969e8d46f100ec1f8d6ea458cfd468 Mon Sep 17 00:00:00 2001
+From: bbhtt <bbhtt.zn0i8@slmail.me>
+Date: Mon, 10 Aug 2026 07:20:29 +0530
+Subject: [PATCH] builder-source-patch: Disable git hooks completely when
+ applying patches
+
+git runs unsandboxed on host in this stage and a malicious source
+can include a post-applypatch which will cause a code execution on host
+
+A better fix would be to sandbox these external commands but f-b is
+not currently structured like that.
+
+Backport of commit 6a01485332969e8d46f100ec1f8d6ea458cfd468.
+
+Adapted for 1.4.4: hunk context adjusted because --no-gpg-sign is not
+present in the git am invocation before upstream 1.4.7.
+---
+ src/builder-source-patch.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/builder-source-patch.c b/src/builder-source-patch.c
+index 626bb3b..9203f39 100644
+--- a/src/builder-source-patch.c
++++ b/src/builder-source-patch.c
+@@ -250,10 +250,14 @@ patch (GFile      *dir,
+   args = g_ptr_array_new ();
+   if (use_git) {
+     g_ptr_array_add (args, "git");
++    g_ptr_array_add (args, "-c");
++    g_ptr_array_add (args, "core.hooksPath=/dev/null");
+     g_ptr_array_add (args, "apply");
+     g_ptr_array_add (args, "-v");
+   } else if (use_git_am) {
+     g_ptr_array_add (args, "git");
++    g_ptr_array_add (args, "-c");
++    g_ptr_array_add (args, "core.hooksPath=/dev/null");
+     g_ptr_array_add (args, "am");
+     g_ptr_array_add (args, "--keep-cr");
+   } else {
